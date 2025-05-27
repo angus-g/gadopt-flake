@@ -1,0 +1,75 @@
+{
+  "nodes": {
+    "firedrake": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1748304442,
+        "narHash": "sha256-/XsHZSVtpnCHdW0TvHMGIwUi0ZdIPue7FmjZrAfRkG0=",
+        "owner": "angus-g",
+        "repo": "firedrake-flake",
+        "rev": "1c1675e1409629dbf392e2816063832676cc241e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "angus-g",
+        "repo": "firedrake-flake",
+        "type": "github"
+      }
+    },
+    "gadopt-repo": {
+      "flake": false,
+      "locked": {
+        "path": "./g-adopt",
+        "type": "path"
+      },
+      "original": {
+        "path": "./g-adopt",
+        "type": "path"
+      },
+      "parent": []
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1748190013,
+        "narHash": "sha256-R5HJFflOfsP5FBtk+zE8FpL8uqE7n62jqOsADvVshhE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "62b852f6c6742134ade1abdd2a21685fd617a291",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1748190013,
+        "narHash": "sha256-R5HJFflOfsP5FBtk+zE8FpL8uqE7n62jqOsADvVshhE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "62b852f6c6742134ade1abdd2a21685fd617a291",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "firedrake": "firedrake",
+        "gadopt-repo": "gadopt-repo",
+        "nixpkgs": "nixpkgs_2"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

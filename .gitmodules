@@ -1,0 +1,3 @@
+[submodule "g-adopt"]
+	path = g-adopt
+	url = https://github.com/g-adopt/g-adopt
