@@ -31,7 +31,7 @@ buildPythonPackage rec {
   installPhase = ''
     mkdir -p $out/${python.sitePackages}
     rm *.so
-    f2py -c --fcompiler=gfortran --f90flags=-flto --opt=-O3 -m flib ../Fortran/*.f90
+    CFLAGS=-Wno-error=incompatible-pointer-types f2py -c --fcompiler=gfortran --f90flags=-flto --opt=-O3 -m flib ../Fortran/*.f90
     cp *.so $out/${python.sitePackages}
   '';
 
