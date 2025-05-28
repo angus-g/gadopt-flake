@@ -31,6 +31,11 @@ pkgs.python3.pkgs.buildPythonPackage rec {
   ];
   dontUseCmakeConfigure = true;
 
+  configurePhase = ''
+    # will eat all the CPUs otherwise
+    export CMAKE_BUILD_PARALLEL_LEVEL=$NIX_BUILD_CORES
+  '';
+
   pypaBuildFlags = [
     "--config=cmake.define.GPLATES_INSTALL_STANDALONE_SHARED_LIBRARY_DEPENDENCIES=FALSE"
   ];
