@@ -77,13 +77,13 @@
           };
           tsp = pkgs.stdenv.mkDerivation rec {
             pname = "tsp";
-            version = "1.2.0";
+            version = "1.3.0";
 
             src = pkgs.fetchFromGitHub {
               owner = "dsroberts";
               repo = "tsp_for_hpc";
               rev = "v${version}";
-              sha256 = "sha256-mzFWnOe6lmKa5/AUrPldOBwQ1AaO5Vgmu+oW1jijUk0=";
+              sha256 = "sha256-E9q/xzQuDvB+a549YJZxPmbT21v5ldQXwv/qa0hzhdg=";
             };
 
             nativeBuildInputs = [ pkgs.cmake ];
