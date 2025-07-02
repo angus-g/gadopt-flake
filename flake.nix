@@ -60,7 +60,10 @@
             dependencies = [
               firedrake.packages.${system}.firedrake
 
-              assess flib pygplates pyrol
+              assess
+              flib
+              pygplates
+              pyrol
 
               pkgs.gmsh
 
@@ -87,7 +90,10 @@
             };
 
             nativeBuildInputs = [ pkgs.cmake ];
-            buildInputs = [ pkgs.hwloc pkgs.sqlite ];
+            buildInputs = [
+              pkgs.hwloc
+              pkgs.sqlite
+            ];
 
             installPhase = ''
               mkdir -p $out/bin
