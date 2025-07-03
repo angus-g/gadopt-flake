@@ -42,6 +42,28 @@
           pyrol = pkgs.python3.pkgs.callPackage ./pkgs/pyrol.nix {
             trilinos = trilinos;
           };
+
+          vtk_9_4 = pypkgs.toPythonModule (
+            (pkgs.libsForQt5.callPackage
+              (import "${nixpkgs}/pkgs/development/libraries/vtk/generic.nix" {
+                majorVersion = "9.4";
+                minorVersion = "2";
+                sourceSha256 = "sha256-NsmODalrsSow/lNwgJeqlJLntm1cOzZuHI3CUeKFagI=";
+              })
+              {
+                enablePython = true;
+                python = pkgs.python3;
+                # must build with LLVM 17 to avoid errors in the JSON third party
+                # lib trying to instantiate std::char_traits<unsigned char>
+                stdenv = pkgs.llvmPackages_17.stdenv;
+              }
+            ).overrideAttrs (old: {
+              # must build with sdk > 13 to allow CMake configure to find the
+              # correct location of getentropy
+              buildInputs = old.buildInputs
+	        ++ pkgs.lib.optional pkgs.stdenv.hostPlatform.isDarwin pkgs.apple-sdk_14;
+            })
+          );
         in
         {
           gadopt = pypkgs.buildPythonPackage {
@@ -75,7 +97,7 @@
               pypkgs.pytest
               pypkgs.shapely
               pypkgs.siphash24
-              pypkgs.vtk
+              vtk_9_4
             ];
           };
           tsp = pkgs.stdenv.mkDerivation rec {
