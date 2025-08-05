@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    firedrake.url = "github:angus-g/firedrake-flake";
     self.submodules = true;
     gadopt-repo = {
       url = "path:./g-adopt";
@@ -15,7 +14,6 @@
     {
       self,
       nixpkgs,
-      firedrake,
       gadopt-repo,
       ...
     }:
@@ -46,22 +44,26 @@
           vtk_9_4 = pypkgs.toPythonModule (
             (pkgs.libsForQt5.callPackage
               (import "${nixpkgs}/pkgs/development/libraries/vtk/generic.nix" {
-                majorVersion = "9.4";
-                minorVersion = "2";
+                version = "9.4.2";
                 sourceSha256 = "sha256-NsmODalrsSow/lNwgJeqlJLntm1cOzZuHI3CUeKFagI=";
               })
               {
-                enablePython = true;
-                python = pkgs.python3;
+                pythonSupport = true;
                 # must build with LLVM 17 to avoid errors in the JSON third party
                 # lib trying to instantiate std::char_traits<unsigned char>
                 stdenv = pkgs.llvmPackages_17.stdenv;
               }
             ).overrideAttrs (old: {
-              # must build with sdk > 13 to allow CMake configure to find the
-              # correct location of getentropy
-              buildInputs = old.buildInputs
-	        ++ pkgs.lib.optional pkgs.stdenv.hostPlatform.isDarwin pkgs.apple-sdk_14;
+              cmakeFlags = old.cmakeFlags ++ [
+                # VTK is going to force C++11 if we don't define this, which breaks
+                # Boost.Math
+	        (pkgs.lib.cmakeBool "VTK_IGNORE_CMAKE_CXX11_CHECKS" true)
+                # I guess we're using a newer version of NetCDF, so __FillValue is
+                # behind a macro now
+	        (pkgs.lib.cmakeFeature "CMAKE_CXX_FLAGS" "-DNETCDF_ENABLE_LEGACY_MACROS")
+	        (pkgs.lib.cmakeFeature "CMAKE_C_FLAGS" "-DNETCDF_ENABLE_LEGACY_MACROS")
+	        (pkgs.lib.cmakeFeature "CMAKE_CXX_STANDARD" "17")
+	      ];
             })
           );
         in
@@ -80,7 +82,7 @@
             dontWrapQtApps = true;
 
             dependencies = [
-              firedrake.packages.${system}.firedrake
+              pypkgs.firedrake
 
               assess
               flib
@@ -141,7 +143,7 @@
             self.packages.${system}.tsp
           ];
           shellHook = ''
-            export OMP_NUM_THREADS=1 PYOP2_SPMD_STRICT=1
+            export OMP_NUM_THREADS=1
           '';
         }
       );
