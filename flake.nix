@@ -117,7 +117,7 @@
             self.packages.${system}.tsp
           ];
           shellHook = ''
-            export OMP_NUM_THREADS=1
+            export OMP_NUM_THREADS=1 PYOP2_SPMD_STRICT=1
           '';
         }
       );
