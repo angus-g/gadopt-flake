@@ -40,32 +40,6 @@
           pyrol = pkgs.python3.pkgs.callPackage ./pkgs/pyrol.nix {
             trilinos = trilinos;
           };
-
-          vtk_9_4 = pypkgs.toPythonModule (
-            (pkgs.libsForQt5.callPackage
-              (import "${nixpkgs}/pkgs/development/libraries/vtk/generic.nix" {
-                version = "9.4.2";
-                sourceSha256 = "sha256-NsmODalrsSow/lNwgJeqlJLntm1cOzZuHI3CUeKFagI=";
-              })
-              {
-                pythonSupport = true;
-                # must build with LLVM 17 to avoid errors in the JSON third party
-                # lib trying to instantiate std::char_traits<unsigned char>
-                stdenv = pkgs.llvmPackages_17.stdenv;
-              }
-            ).overrideAttrs (old: {
-              cmakeFlags = old.cmakeFlags ++ [
-                # VTK is going to force C++11 if we don't define this, which breaks
-                # Boost.Math
-	        (pkgs.lib.cmakeBool "VTK_IGNORE_CMAKE_CXX11_CHECKS" true)
-                # I guess we're using a newer version of NetCDF, so __FillValue is
-                # behind a macro now
-	        (pkgs.lib.cmakeFeature "CMAKE_CXX_FLAGS" "-DNETCDF_ENABLE_LEGACY_MACROS")
-	        (pkgs.lib.cmakeFeature "CMAKE_C_FLAGS" "-DNETCDF_ENABLE_LEGACY_MACROS")
-	        (pkgs.lib.cmakeFeature "CMAKE_CXX_STANDARD" "17")
-	      ];
-            })
-          );
         in
         {
           gadopt = pypkgs.buildPythonPackage {
@@ -99,7 +73,7 @@
               pypkgs.pytest
               pypkgs.shapely
               pypkgs.siphash24
-              vtk_9_4
+              pypkgs.vtk
             ];
           };
           tsp = pkgs.stdenv.mkDerivation rec {
